@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class FirstPersonController : MonoBehaviour
 //this script is from https://www.youtube.com/watch?v=iN9DK-X59WE
+//I also implemented script from https://www.youtube.com/watch?v=swOfmyJvb98&list=PLtLToKUhgzwm1rZnTeWSRAyx9tl8VbGUE&index=1
 {
    public float WalkSpeed = 5f; 
    public float SprintMultiplier = 2f;
@@ -16,8 +17,14 @@ public class FirstPersonController : MonoBehaviour
    public Transform PlayerCamera;
    public float Gravity = 9.8f;
    private Vector3 velocity;
-   private float verticalRotation = 0f;
+   //private float verticalRotation = 0f;
    private CharacterController characterController;
+
+   float xRotation = 0f;
+   float yRotation = 0f;
+   public float bottomClamp = 80f;
+   public float topClamp = -80f;
+
 
    void Awake()
    {
@@ -57,10 +64,14 @@ public class FirstPersonController : MonoBehaviour
             float mouseX = Input.GetAxis("Mouse X") * LookSensitivityX;
             float mouseY = Input.GetAxis("Mouse Y") * LookSensitivityY;
 
-            verticalRotation -= mouseY;
-            verticalRotation = Mathf.Clamp(verticalRotation, MinYLookAngle, MaxYLookAngle);
 
-            PlayerCamera.localRotation = Quaternion.Euler (verticalRotation, 0f, 0f);
+            xRotation -= mouseY;
+            yRotation += mouseX;
+            transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
+            xRotation = Mathf.Clamp(xRotation, topClamp, bottomClamp);
+            //verticalRotation -= mouseY;
+            //verticalRotation = Mathf.Clamp(verticalRotation, MinYLookAngle, MaxYLookAngle);
+            //PlayerCamera.localRotation = Quaternion.Euler (verticalRotation, 0f, 0f);
             transform.Rotate(Vector3.up * mouseX);
         }
    }
